@@ -41,7 +41,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  List<TileModel> paisr = new List<TileModel>();
 
   @override
   void initState() {
@@ -49,14 +48,33 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     paisr = getPairs();
     paisr.shuffle();
+
+    visiblepaisr = paisr;
+    Future.delayed(const Duration(seconds: 5
+    ),(){
+      selected  = true;
+
+      setState(() {
+        selected  = false;
+        visiblepaisr = getQuestionPairs();
+        paisr = visiblepaisr;
+
+      });
+
+    });
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.symmetric(vertical: 50,horizontal: 20),
         child: Column(
           children: <Widget>[
-            Text("0/800"),
+            SizedBox(height: 50,),
+            Text("$points/800",style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500
+            ),),
             Text("False"),
             SizedBox(height: 20.0,),
             GridView(
@@ -66,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                 children: List.generate(paisr.length, (index){
                   return Tile(
                     imagePath: paisr[index].getImagePath(),
-                    isSeleted: paisr[index].getIsSelected(),
+                    tileIndex: index,
                   );
                 })
             ),
@@ -81,10 +99,11 @@ class _HomePageState extends State<HomePage> {
 class Tile extends StatefulWidget {
 
   String imagePath;
-  bool isSeleted;
+//  bool isSeleted;
+  int tileIndex;
   _HomePageState parent;
 
-  Tile({this.imagePath,this.isSeleted,this.parent});
+  Tile({this.imagePath,this.parent,this.tileIndex});
 
   @override
   _TileState createState() => _TileState();
@@ -93,9 +112,54 @@ class Tile extends StatefulWidget {
 class _TileState extends State<Tile> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(5),
-      child: Image.asset(widget.imagePath),
+    return GestureDetector(
+      onTap: (){
+        if(!selected){
+          setState(() {
+            paisr[widget.tileIndex].setIsSelected(true);
+          });
+          if(selectedImagePath != ""){
+
+            if(selectedImagePath == paisr[widget.tileIndex].getImagePath()){
+
+              Future.delayed(const Duration(seconds: 2),(){
+                points = points + 100;
+                setState(() {
+
+                });
+
+                widget.parent.setState(() {
+
+
+                  paisr[widget.tileIndex].setImageAssetPath("");
+                  paisr[selectedTileIndex].setImageAssetPath("");
+
+                });
+              });
+
+            }else{
+
+
+            }
+
+          }else{
+
+            selectedTileIndex = widget.tileIndex;
+            selectedImagePath = paisr[widget.tileIndex].getImagePath();
+          }
+//          selected = true;
+           }
+
+      },
+      child: Container(
+        margin: EdgeInsets.all(5),
+        child: Image.asset(paisr[widget.tileIndex].getIsSelected()
+            ? paisr[widget.tileIndex].getImagePath(): widget.imagePath),
+//        child: paisr[widget.tileIndex].getImagePath()!= "" ?
+//        Image.asset(paisr[widget.tileIndex].getIsSelected() ? widget.imagePath
+//            :paisr[widget.tileIndex].getImagePath()) : Image.asset("assets/correct.png")
+
+      ),
     );
   }
 }

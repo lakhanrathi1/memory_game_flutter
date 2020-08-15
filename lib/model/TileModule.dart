@@ -9,7 +9,7 @@ class TileModel{
   }
 
   void setIsSelected(bool isSelected){
-    isSelected = isSelected;
+    this.isSelected = isSelected;
   }
 
 

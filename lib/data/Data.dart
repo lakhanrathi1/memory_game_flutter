@@ -1,6 +1,15 @@
 import 'package:memory_game/model/TileModule.dart';
 
+int points = 0;
+List<TileModel> paisr = new List<TileModel>();
+String selectedImagePath  = "";
+int selectedTileIndex;
+List<TileModel> visiblepaisr = new List<TileModel>();
+
+
+bool selected = false;
 List<TileModel> getPairs(){
+
 
   List<TileModel> pairs = new List<TileModel>();
   TileModel tileModel = new TileModel();
